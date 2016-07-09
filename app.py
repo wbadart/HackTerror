@@ -24,7 +24,7 @@ def temp(event):
 
 @app.route('/summary/<event>')
 def summary(event):
-    data = json.dumps(cr.get_summary(event))
+    data = json.dumps(cr.get_summary(event, True, False))
     res = flask.Response(data)
     res.headers['Content-Type'] = 'application/json'
     return res

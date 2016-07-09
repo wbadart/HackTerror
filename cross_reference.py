@@ -68,13 +68,28 @@ def get_attack_temp(event):
     temps = [float(obj['tempi']) for obj in alldata['history']['observations'] if 'tempi' in obj]
     return {'avgTemp': float(sum(temps)) / len(temps)}
 
-def get_summary(event):
+def get_summary(event, useData, date):
     obj = get_attack_dict(event)
     alldata = get_attack_weather(event)
     temp = get_attack_temp(alldata)['avgTemp']
     phase = moon.get_moon_phases(obj[1] + two_dig(obj[2]) + two_dig(obj[3]))
+    conds = set([obs['conds'] for obs in alldata['history']['observations'] if 'conds' in obs])
 
-    return {'phase':phase, 'temp':temp}
+    obj = [d for d in obj if d and not (d is str and d.isdigit())]
+    if useData:
+        return {'phase':phase, 'temp':temp, 'conditions':list(conds), 'attack_data':obj}
+    else:
+        return {'phase':phase, 'temp':temp, 'conditions':list(conds)}
+
+
+def get_prior(event):
+    obj = get_attack_dict(event)
+    res = []
+    d = (int(obj[2]), int(obj[3]))
+    for i in range(7):
+        # weather = [0, obj[1], str(d[0]-i), str(d[1]-i)] + obj[4:]
+        pass
+
 
 if __name__ == '__main__':
     fs = open('gtb.csv', 'r')
