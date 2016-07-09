@@ -16,6 +16,12 @@
                         $scope.data = res.data;
                     });
                 };
+
+                $scope.temp = function(){
+                    $http.get('http://localhost:5000/temp/' + $scope.eventID).then(function(res){
+                        $scope.data = res.data;
+                    });
+                };
             });
     </script>
 </head>
@@ -32,6 +38,7 @@
                     <input ng-model="eventID" class="form-control">
                 </div>
                 <button class="btn btn-primary" ng-click="submit()">Submit</button>
+                <button class="btn btn-info" ng-click="temp()">Get Temp</button>
             </div>
         </div>
 

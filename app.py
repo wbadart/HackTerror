@@ -19,5 +19,12 @@ def data(eventID):
 def index():
     return flask.send_file('index.html')
 
+@app.route('/temp/<event>')
+def temp(event):
+    data = json.dumps(cr.get_attack_temp(event))
+    res = flask.Response(data)
+    res.headers['Content-Type'] = 'application/json'
+    return res
+
 if __name__ == '__main__':
     app.run()

@@ -50,7 +50,11 @@ def get_attack_weather(eventID):
     data = get_history(lat, longt, date)
     return data
 
-
+def get_attack_temp(event):
+    alldata = get_attack_weather(event)
+    print alldata['history']['observations'][0]['tempi']
+    temps = [float(obj['tempi']) for obj in alldata['history']['observations'] if 'tempi' in obj]
+    return {'avgTemp': float(sum(temps)) / len(temps)}
 
 if __name__ == '__main__':
     fs = open('gtb.csv', 'r')
