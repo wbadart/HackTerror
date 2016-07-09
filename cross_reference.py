@@ -1,4 +1,5 @@
 import csv, json
+import moon_phases_local as moon
 from urllib2 import urlopen
 
 # base = 'http://api.wunderground.com/api/d0787b21158eb20b'
@@ -68,10 +69,12 @@ def get_attack_temp(event):
     return {'avgTemp': float(sum(temps)) / len(temps)}
 
 def get_summary(event):
+    obj = get_attack_dict(event)
     alldata = get_attack_weather(event)
-    print alldata
-    temp = get_attack_temp(alldata)
-    return temp
+    temp = get_attack_temp(alldata)['avgTemp']
+    phase = moon.get_moon_phases(obj[1] + two_dig(obj[2]) + two_dig(obj[3]))
+
+    return {'phase':phase, 'temp':temp}
 
 if __name__ == '__main__':
     fs = open('gtb.csv', 'r')
