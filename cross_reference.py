@@ -1,7 +1,8 @@
 import csv, json
 from urllib2 import urlopen
 
-base = 'http://api.wunderground.com/api/d0787b21158eb20b'
+# base = 'http://api.wunderground.com/api/d0787b21158eb20b'
+base = 'http://api.wunderground.com/api/b64e253b7d44376a'
 
 def load_gtb():
     fs = open('gtb2.csv', 'r')
@@ -23,6 +24,8 @@ def two_dig(n):
 def get_history(lat=12.123, longt=14.123, date='20150328'):
     url = base + '/geolookup/q/{},{}.json'.format(lat, longt)
 
+    print url
+
     loc = json.loads(urlopen(url).read())['location']
     city = str(loc['city'])
     country = str(loc['country_name'])
@@ -30,7 +33,11 @@ def get_history(lat=12.123, longt=14.123, date='20150328'):
     if country == 'USA':
         country = str(loc['state'])
 
+    print country
+
     url = base + '/history_{}/q/{}/{}.json'.format(date, country, city.replace(' ', '_'))
+
+    print url
     data = json.loads(urlopen(url).read())
 
     return data
@@ -43,18 +50,28 @@ def get_attack_dict(eventID):
 
 def get_attack_weather(eventID):
     obj = get_attack_dict(eventID)
+
+    print 'got obj'
     lat   = obj[13]
     longt = obj[14]
     date  = obj[1] + two_dig(obj[2]) + two_dig(obj[3])
 
+    print lat, longt, date
+
     data = get_history(lat, longt, date)
+
     return data
 
 def get_attack_temp(event):
-    alldata = get_attack_weather(event)
-    print alldata['history']['observations'][0]['tempi']
+    alldata = event
     temps = [float(obj['tempi']) for obj in alldata['history']['observations'] if 'tempi' in obj]
     return {'avgTemp': float(sum(temps)) / len(temps)}
+
+def get_summary(event):
+    alldata = get_attack_weather(event)
+    print alldata
+    temp = get_attack_temp(alldata)
+    return temp
 
 if __name__ == '__main__':
     fs = open('gtb.csv', 'r')

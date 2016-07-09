@@ -12,13 +12,19 @@
                 $scope.eventID = '';
                 $scope.data = {};
                 $scope.submit = function(){
-                    $http.get('http://localhost:5000/' + $scope.eventID).then(function(res){
+                    $http.get('/' + $scope.eventID).then(function(res){
                         $scope.data = res.data;
                     });
                 };
 
                 $scope.temp = function(){
-                    $http.get('http://localhost:5000/temp/' + $scope.eventID).then(function(res){
+                    $http.get('/temp/' + $scope.eventID).then(function(res){
+                        $scope.data = res.data;
+                    });
+                };
+
+                $scope.summary = function(){
+                    $http.get('/summary/' + $scope.eventID).then(function(res){
                         $scope.data = res.data;
                     });
                 };
@@ -37,6 +43,7 @@
                     <span class="input-group-addon">EventID</span>
                     <input ng-model="eventID" class="form-control">
                 </div>
+                <button class="btn btn-success" ng-click="summary()">Summary</button>
                 <button class="btn btn-primary" ng-click="submit()">Submit</button>
                 <button class="btn btn-info" ng-click="temp()">Get Temp</button>
             </div>
